@@ -25,10 +25,10 @@ Circuit Layout
 from math import log
 
 global targetTime
-targetTime = 0.5
+targetTime = 1
 
-useE24 = True
-showRange = False
+useE24 = True          # set to True to use all possible combinations from the E24 series or set to False to use the custom lists below (stdR, stdC)
+showRange = True      # set to True if you want to print out all possible solutions within a given range
 range = 0.001
 
 # these are the values I had on hand
