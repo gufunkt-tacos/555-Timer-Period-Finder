@@ -25,7 +25,7 @@ Circuit Layout
 from math import log
 
 global targetTime
-targetTime = 1
+targetTime = 0.5
 
 useE24 = True
 showRange = False
@@ -98,7 +98,7 @@ def iterateE24(ir1, ir2, ic):
 
                 newTime = timePeriod(R1, R2, C)
 
-                if abs(newTime - 1) < abs(currentLowest - 1):
+                if abs(newTime - targetTime) < abs(currentLowest - targetTime):
                     currentLowest = newTime
                     bestR1 = R1
                     bestR2 = R2
