@@ -1,2 +1,2 @@
-# 555-Timer-1s-Period
+# 555-Timer-Period-Finder
 Finds the perfect RRC combo for a 555 astable circuit
