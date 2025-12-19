@@ -15,7 +15,7 @@ Circuit Layout
     └─┘
      │
      │   C
-  ───────  
+  ───────
   ───────
      │
      │
@@ -23,28 +23,65 @@ Circuit Layout
 
 """
 from math import log
+from decimal import Decimal, getcontext
+
+getcontext().prec = 50
 
 global targetTime
-targetTime = 1
+targetTime = Decimal("1")  # adjust this to set target time
 
 useE24 = True          # set to True to use all possible combinations from the E24 series or set to False to use the custom lists below (stdR, stdC)
-showRange = False      # set to True if you want to print out all possible solutions within a given range
-range = 0.001
+showRange = True      # set to True if you want to print out all possible solutions within a given range
+range = Decimal("0.000001")
+
+
 
 # these are the values I had on hand
 # feel free to use the E24 toggle to use all possible combinations
-stdR = [100,120,150,180,220,270,330,390,470,560,620,680,1000,1200,1500,1800,2200,2700,3300,3900,4700,5600,6800,8200,10000,12000,15000,18000,22000,27000,33000,39000,47000,56000,68000,82000,100000,120000,150000,180000,220000,270000,330000,390000,470000,560000,680000,820000,1000000,2200000,2700000,3300000,3900000,4700000,5600000,10000000]
-stdC = [10*10**-12,47*10**-12,100*10**-12,120*10**-12,150*10**-12,180*10**-12,220*10**-12,270*10**-12,330*10**-12,390*10**-12,560*10**-12,680*10**-12,820*10**-12,1*10**-9,2.2*10**-9,3.3*10**-9,4.7*10**-9,10*10**-9,22*10**-9,33*10**-9,47*10**-9,68*10**-9,100*10**-9,150*10**-9,220*10**-9,330*10**-9,470*10**-9,680*10**-9,1*10**-6, 2.2*10**-6,3.3*10**-6,4.7*10**-6,10*10**-6,22*10**-6,33*10**-6,47*10**-6,100*10**-6,330*10**-6,470*10**-6,1000*10**-6,2200*10**-6,4700*10**-6]
 
-E24 = [
-  10, 11, 12, 13, 15, 16, 18, 20,
-  22, 24, 27, 30, 33, 36, 39, 43,
-  47, 51, 56, 62, 68, 75, 82, 91
+stdR = [
+    Decimal("100"), Decimal("120"), Decimal("150"), Decimal("180"), Decimal("220"),
+    Decimal("270"), Decimal("330"), Decimal("390"), Decimal("470"), Decimal("560"),
+    Decimal("620"), Decimal("680"), Decimal("1000"), Decimal("1200"), Decimal("1500"),
+    Decimal("1800"), Decimal("2200"), Decimal("2700"), Decimal("3300"), Decimal("3900"),
+    Decimal("4700"), Decimal("5600"), Decimal("6800"), Decimal("8200"), Decimal("10000"),
+    Decimal("12000"), Decimal("15000"), Decimal("18000"), Decimal("22000"), Decimal("27000"),
+    Decimal("33000"), Decimal("39000"), Decimal("47000"), Decimal("56000"), Decimal("68000"),
+    Decimal("82000"), Decimal("100000"), Decimal("120000"), Decimal("150000"), Decimal("180000"),
+    Decimal("220000"), Decimal("270000"), Decimal("330000"), Decimal("390000"), Decimal("470000"),
+    Decimal("560000"), Decimal("680000"), Decimal("820000"), Decimal("1000000"),
+    Decimal("2200000"), Decimal("2700000"), Decimal("3300000"), Decimal("3900000"),
+    Decimal("4700000"), Decimal("5600000"), Decimal("10000000")
 ]
 
 
+stdC = [
+    Decimal("10e-12"), Decimal("47e-12"), Decimal("100e-12"), Decimal("120e-12"),
+    Decimal("150e-12"), Decimal("180e-12"), Decimal("220e-12"), Decimal("270e-12"),
+    Decimal("330e-12"), Decimal("390e-12"), Decimal("560e-12"), Decimal("680e-12"),
+    Decimal("820e-12"), Decimal("1e-9"), Decimal("2.2e-9"), Decimal("3.3e-9"),
+    Decimal("4.7e-9"), Decimal("10e-9"), Decimal("22e-9"), Decimal("33e-9"),
+    Decimal("47e-9"), Decimal("68e-9"), Decimal("100e-9"), Decimal("150e-9"),
+    Decimal("220e-9"), Decimal("330e-9"), Decimal("470e-9"), Decimal("680e-9"),
+    Decimal("1e-6"), Decimal("2.2e-6"), Decimal("3.3e-6"), Decimal("4.7e-6"),
+    Decimal("10e-6"), Decimal("22e-6"), Decimal("33e-6"), Decimal("47e-6"),
+    Decimal("100e-6"), Decimal("330e-6"), Decimal("470e-6"), Decimal("1000e-6"),
+    Decimal("2200e-6"), Decimal("4700e-6")
+]
+
+E24 = [
+    Decimal("10"), Decimal("11"), Decimal("12"), Decimal("13"),
+    Decimal("15"), Decimal("16"), Decimal("18"), Decimal("20"),
+    Decimal("22"), Decimal("24"), Decimal("27"), Decimal("30"),
+    Decimal("33"), Decimal("36"), Decimal("39"), Decimal("43"),
+    Decimal("47"), Decimal("51"), Decimal("56"), Decimal("62"),
+    Decimal("68"), Decimal("75"), Decimal("82"), Decimal("91")
+]
+
+
+
 global currentLowest
-currentLowest = 0
+currentLowest = Decimal("Infinity")
 global bestR1
 global bestR2
 global bestC
@@ -53,14 +90,18 @@ ir1 = 0
 ir2 = 0
 ic = - 10
 
+Ln2 = Decimal("2").ln()
+TEN = Decimal("10")
+
 def timePeriod(R1, R2, C):
-    return (R1 + 2*R2)*C / log(2)
+    return (R1 + 2*R2) * C * Ln2
 
 def printOut(R1, R2, C, time):
-    print("Time Period = " + str(time) + " s")
-    print("R1 = " + str(R1) + " Ω")
-    print("R2 = " + str(R2) + " Ω")
-    print("C = " + str(float('%.*g' % (2, C))) + " F") # stops you being able to see floating point error
+    print(f"Time Period = {time} s")
+    print(f"R1 = {R1} Ω")
+    print(f"R2 = {R2} Ω")
+    print(f"C = {C:.2E} F")
+    # print("C = " + str(float('%.*g' % (2, C))) + " F") # stops you being able to see floating point error
     print()
 
 def iterateCustom():
@@ -92,9 +133,9 @@ def iterateE24(ir1, ir2, ic):
     for r1 in E24:
         for r2 in E24:
             for c in E24:
-                R1 = r1*10**ir1
-                R2 = r2*10**ir2
-                C = c*10**ic
+                R1 = r1 * (TEN ** ir1)
+                R2 = r2 * (TEN ** ir2)
+                C = c * (TEN ** ic)
 
                 newTime = timePeriod(R1, R2, C)
 
