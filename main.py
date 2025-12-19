@@ -25,7 +25,7 @@ Circuit Layout
 from math import log
 from decimal import Decimal, getcontext
 
-getcontext().prec = 10
+getcontext().prec = 5000
 
 global targetTime
 targetTime = Decimal("1")  # adjust this to set target time
