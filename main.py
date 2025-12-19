@@ -25,14 +25,14 @@ Circuit Layout
 from math import log
 from decimal import Decimal, getcontext
 
-getcontext().prec = 50
+getcontext().prec = 10
 
 global targetTime
 targetTime = Decimal("1")  # adjust this to set target time
 
 useE24 = True          # set to True to use all possible combinations from the E24 series or set to False to use the custom lists below (stdR, stdC)
-showRange = True      # set to True if you want to print out all possible solutions within a given range
-range = Decimal("0.000001")
+showTolerance = True      # set to True if you want to print out all possible solutions within a given range
+tolerance = Decimal("0.000001")
 
 
 
@@ -86,10 +86,6 @@ global bestR1
 global bestR2
 global bestC
 
-ir1 = 0
-ir2 = 0
-ic = - 10
-
 Ln2 = Decimal("2").ln()
 TEN = Decimal("10")
 
@@ -120,8 +116,8 @@ def iterateCustom():
                     bestR2 = R2
                     bestC = C
                 
-                if showRange:
-                    if abs(newTime - targetTime) <= range:
+                if showTolerance:
+                    if abs(newTime - targetTime) <= tolerance:
                         printOut(R1, R2, C, newTime)
                 
 
@@ -145,8 +141,8 @@ def iterateE24(ir1, ir2, ic):
                     bestR2 = R2
                     bestC = C
 
-                if showRange:
-                    if abs(newTime - targetTime) <= range:
+                if showTolerance:
+                    if abs(newTime - targetTime) <= tolerance:
                         printOut(R1, R2, C, newTime)
                 
 
@@ -155,17 +151,10 @@ def iterateE24(ir1, ir2, ic):
 if useE24 == False:
     iterateCustom()
 else:
-    while ir1 <= 8:
-        while ir2 <= 8:
-            while ic <= 0:
+    for ir1 in range(0, 9):                     # iteration for very R1
+        for ir2 in range(0, 9):                 # iteration for very R2
+            for ic in range(-10, 1):            # iteration for very C
                 iterateE24(ir1, ir2, ic)
-                ic += 1
-            ic = - 10
-            ir2 += 1
-        ic = - 10
-        ir2 = 0
-        ir1 += 1
-
 
 print("Best:")
 printOut(bestR1, bestR2, bestC, currentLowest)
