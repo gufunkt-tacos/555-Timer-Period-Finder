@@ -25,13 +25,13 @@ Circuit Layout
 from math import log
 from decimal import Decimal, getcontext
 
-getcontext().prec = 5000
+getcontext().prec = 5000            # this sets to number of decimal digits used
 
 global targetTime
-targetTime = Decimal("1")  # adjust this to set target time
+targetTime = Decimal("1")           # adjust this to set target time
 
-useE24 = True          # set to True to use all possible combinations from the E24 series or set to False to use the custom lists below (stdR, stdC)
-showTolerance = True      # set to True if you want to print out all possible solutions within a given range
+useE24 = True                       # set to True to use all possible combinations from the E24 series or set to False to use the custom lists below (stdR, stdC)
+showTolerance = True                # set to True if you want to print out all possible solutions within a given range
 tolerance = Decimal("0.000001")
 
 
