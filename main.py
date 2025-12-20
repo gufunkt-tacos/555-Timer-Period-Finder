@@ -152,9 +152,9 @@ def iterateE24(ir1, ir2, ic):
 if useE24 == False:
     iterateCustom()
 else:
-    for ir1 in range(0, 9):                     # iteration for very R1
-        for ir2 in range(0, 9):                 # iteration for very R2
-            for ic in range(-10, 1):            # iteration for very C
+    for ir1 in range(0, 9):                     # iteration for every R1
+        for ir2 in range(0, 9):                 # iteration for every R2
+            for ic in range(-10, 1):            # iteration for every C
                 iterateE24(ir1, ir2, ic)
 
 print("Best:")
